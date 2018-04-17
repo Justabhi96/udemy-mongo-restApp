@@ -31,11 +31,11 @@ app.get('/todos',(req, res) => {
 app.get('/todos/:todoId',(req,res) => {
     var id = req.params.todoId;
     if(!ObjectId.isValid(id)){
-        res.status(404).send();
+        return res.status(404).send();
     }
     TodoModel.findById(id).then((doc) => {
         if(!doc){
-            res.status(404).send();
+            return res.status(404).send();
         }
         res.send(doc);
     },(e) => {
@@ -43,6 +43,20 @@ app.get('/todos/:todoId',(req,res) => {
     });
 });
 
+app.delete('/todos/:todoId',(req,res) => {
+    var id = req.params.todoId;
+    if(!ObjectId.isValid(id)){
+        return res.status(404).send();
+    }
+    TodoModel.findByIdAndRemove(id).then((result) => {
+        if(!result){
+            return res.status(404).send();
+        }
+        res.send(result);
+    },(e) => {
+        res.status(400).send();
+    });
+});
 app.listen(4000, () => {
     console.log("Server up on port 4000");
 });
